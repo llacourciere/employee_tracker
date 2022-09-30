@@ -8,7 +8,9 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+app.get('/api/departments', (req, res) => {
 
+});
 
 
 app.listen(PORT, () => {

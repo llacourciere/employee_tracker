@@ -22,3 +22,14 @@ VALUES
     ('Janitor', 50000, 6),
     ('Customer Service', 50000, 5),
     ('Customer Service', 50000, 5);
+
+INSERT INTO employees (first_name, last_name, manager)
+VALUES
+    ('Jane', 'Doe', 'Bobby Bill'),
+    ('Bill', 'Doe', 'Steve Store'),
+    ('Fred', 'Doe', 'Leslie Loony'),
+    ('George', 'Doe', 'Bobby Bill'),
+    ('Same', 'Doe', null),
+    ('Julie', 'Doe', 'Leslie Loony'),
+    ('Jessica', 'Doe', 'Jessica Jane'),
+    ('Lauren', 'Doe', 'Leslie Loony');
