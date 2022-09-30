@@ -23,13 +23,13 @@ VALUES
     ('Customer Service', 50000, 5),
     ('Customer Service', 50000, 5);
 
-INSERT INTO employees (first_name, last_name, manager)
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES
-    ('Jane', 'Doe', 'Bobby Bill'),
-    ('Bill', 'Doe', 'Steve Store'),
-    ('Fred', 'Doe', 'Leslie Loony'),
-    ('George', 'Doe', 'Bobby Bill'),
-    ('Same', 'Doe', null),
-    ('Julie', 'Doe', 'Leslie Loony'),
-    ('Jessica', 'Doe', 'Jessica Jane'),
-    ('Lauren', 'Doe', 'Leslie Loony');
+    ('Jane', 'Doe', 4, null),
+    ('Bill', 'Doe', 5, 1),
+    ('Fred', 'Doe', 1, 1),
+    ('George', 'Doe', 7, 3),
+    ('Same', 'Doe', 8, 1),
+    ('Julie', 'Doe', 9, 3),
+    ('Jessica', 'Doe', 10, 3),
+    ('Lauren', 'Doe', 2, 1);
