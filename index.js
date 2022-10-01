@@ -2,6 +2,7 @@ const { prompt, default: inquirer } = require('inquirer');
 const mysql = require('mysql2');
 const db = require('./connection');
 const cTable = require('console.table');
+const { NONAME } = require('dns');
 
 const init = () => {
     prompt([
@@ -57,8 +58,12 @@ const init = () => {
 
         if (task == "add a role") {
             addNewRole();
-            init();
+        };
+
+        if (task == "add an employee") {
+            addEmployee();
         }
+
     })
 };
 
@@ -100,10 +105,79 @@ const addNewRole = () => {
             const query = `INSERT INTO roles (title, salary, department_id) VALUES (?)`;
             db.query(query, [[response.title, response.salary, response.department_id]], (err, res) => {
                 if (err) throw err;
-                console.log('Successfully inserted ${response.title}');
+                console.log('Successfully inserted' + `${response.title}` );
+                init();
             });
         })
         .catch(err => {
             console.log(err);
         })
+}
+
+const addEmployee = () => {
+    db.query(`SELECT * FROM employees`, (err, res) => {
+        if (err) throw err;
+        const managers = [
+            {
+                name: 'none',
+                value: 0
+            }
+        ];
+        res.forEach(({ first_name, last_name, id }) => {
+            managers.push({
+                name: first_name + " " + last_name,
+                value: id
+            });
+        });
+
+        const roles = [];
+        db.query(`SELECT * FROM roles`, (err, res) => {
+            if (err) throw err;
+
+            res.forEach(role => {
+                let qObj = {
+                    name: role.title,
+                    value: role.id
+                }
+                roles.push(qObj);
+            });
+
+            let questions = [
+                {
+                    type: 'input',
+                    name: 'first_name',
+                    message: "What is the employee's first name?"
+                },
+                {
+                    type: 'input',
+                    name: 'last_name',
+                    message: "What is the employee's last name?"
+                },
+                {
+                    type: 'list',
+                    name: 'role_id',
+                    choices: roles,
+                    message: "What role does this employee have?"
+                },
+                {
+                    type: 'list',
+                    name: 'manager_id',
+                    choices: managers,
+                    message: "Who is the employees manager?"
+                },
+            ];
+        prompt(questions)
+        .then(response => {
+            const query = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?)`;
+            db.query(query, [[response.first_name, response.last_name, response.role_id, response.manager_id]], (err, res) => {
+                if (err) throw err;
+                console.log('Successfully inserted:' + `${response.first_name}` + " " + `${response.last_name}`);
+                init();
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        })
+        });
+    });
 }
