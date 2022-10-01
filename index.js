@@ -103,9 +103,9 @@ const addNewRole = () => {
     prompt(questions)
         .then(response => {
             const query = `INSERT INTO roles (title, salary, department_id) VALUES (?)`;
-            db.query(query, [[response.title, response.salary, response.department_id]], (err, res) => {
+            db.query(query, [[response.title, response.salary, response.department]], (err, res) => {
                 if (err) throw err;
-                console.log('Successfully inserted' + `${response.title}` );
+                console.log('Successfully inserted' + " " + `${response.title}` );
                 init();
             });
         })
@@ -120,7 +120,7 @@ const addEmployee = () => {
         const managers = [
             {
                 name: 'none',
-                value: 0
+                value: 'NULL'
             }
         ];
         res.forEach(({ first_name, last_name, id }) => {

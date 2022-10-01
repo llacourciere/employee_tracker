@@ -20,7 +20,6 @@ VALUES
     ('Payroll', 50000, 4),
     ('Sales Person', 40000, 7),
     ('Janitor', 50000, 6),
-    ('Customer Service', 50000, 5),
     ('Customer Service', 50000, 5);
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
@@ -29,7 +28,4 @@ VALUES
     ('Bill', 'Doe', 5, 1),
     ('Fred', 'Doe', 1, 1),
     ('George', 'Doe', 7, 3),
-    ('Same', 'Doe', 8, 1),
-    ('Julie', 'Doe', 9, 3),
-    ('Jessica', 'Doe', 10, 3),
-    ('Lauren', 'Doe', 2, 1);
+    ('Same', 'Doe', 8, 1);
