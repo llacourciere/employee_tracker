@@ -2,7 +2,6 @@ const { prompt, default: inquirer } = require('inquirer');
 const mysql = require('mysql2');
 const db = require('./connection');
 const cTable = require('console.table');
-const { NONAME } = require('dns');
 
 const init = () => {
     prompt([
@@ -115,15 +114,16 @@ const addNewRole = () => {
 }
 
 const addEmployee = () => {
-    db.query(`SELECT * FROM employees`, (err, res) => {
+    //get all employers and make turn their manager id into a manager array
+    db.query(`SELECT * FROM employees`, (err, emplRes) => {
         if (err) throw err;
         const managers = [
             {
                 name: 'none',
-                value: 'NULL'
+                value: 0
             }
         ];
-        res.forEach(({ first_name, last_name, id }) => {
+        emplRes.forEach(({ first_name, last_name, id }) => {
             managers.push({
                 name: first_name + " " + last_name,
                 value: id
