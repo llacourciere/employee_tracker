@@ -49,7 +49,6 @@ const init = () => {
                     message: 'What is the name of the new department?'
                 }
             ]).then(newDept => {
-                console.log("inserting into departments");
                 db
                     .promise().query('INSERT INTO departments SET ?', newDept)
                     .then(init)
@@ -105,11 +104,10 @@ const addNewRole = () => {
     ];
     prompt(questions)
         .then(response => {
-            console.log("inserting into roles");
             const query = `INSERT INTO roles SET (?)`;
-            db.query(query, {title:response.title, salary:response.salary, department:response.department}, (err, res) => {
+            db.query(query, { title: response.title, salary: response.salary, department: response.department }, (err, res) => {
                 if (err) throw err;
-                console.log('Successfully inserted' + " " + `${response.title}` );
+                console.log('Successfully inserted' + " " + `${response.title}`);
                 init();
             });
         })
@@ -171,35 +169,72 @@ const addEmployee = () => {
                     message: "Who is the employees manager?"
                 },
             ];
-        prompt(questions)
-        .then(response => {
-            console.log("inserting into employees");
-            const query = `INSERT INTO employees SET ?`;
-            db.query(query, {first_name:response.first_name, last_name:response.last_name, role_id:response.role_id, manager_id:response.manager_id}, (err, res) => {
-                if (err) throw err;
-                console.log('Successfully inserted:' + `${response.first_name}` + " " + `${response.last_name}`);
-                init();
-            });
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            prompt(questions)
+                .then(response => {
+                    const query = `INSERT INTO employees SET ?`;
+                    db.query(query, { first_name: response.first_name, last_name: response.last_name, role_id: response.role_id, manager_id: response.manager_id }, (err, res) => {
+                        if (err) throw err;
+                        console.log('Successfully inserted:' + `${response.first_name}` + " " + `${response.last_name}`);
+                        init();
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         });
     });
 }
 
-// const updateEmployeeRole = () => {
-//     const roles = [];
-//     db.query(`SELECT * FROM roles`, (err, res)=> {
-//         if (err) throw err;
+const updateEmployeeRole = () => {
+    const employees = [];
+    db.query(`SELECT * FROM employees`, (err, emplRes) => {
+        if (err) throw err;
 
-//         res.forEach(role => {
-//             let qObj = {
-//                 name: role.name,
-//                 value: role.id
-//             }
-//             roles.push(qObj);
-//         });
-//         let question = 
-//     })
-// }
+        emplRes.forEach(emplRes => {
+            let eObj = {
+                name: emplRes.first_name + " " + emplRes.last_name,
+                value: emplRes.id
+            }
+            employees.push(eObj);
+        })
+
+        const roles = [];
+        db.query(`SELECT * FROM roles`, (err, res) => {
+            if (err) throw err;
+
+            res.forEach(role => {
+                let qObj = {
+                    name: role.title,
+                    value: role.id
+                }
+                roles.push(qObj);
+            });
+            let questions = [
+                {
+                    type: 'list',
+                    name: 'id',
+                    choices: employees,
+                    message: "Which emmployee do you want to update?"
+                },
+                {
+                    type: 'list',
+                    name: 'role_id',
+                    choices: roles,
+                    message: "What new role does this employee have?"
+                }
+            ];
+            prompt(questions)
+                .then(response => {
+                    const query = `UPDATE employees SET ? WHERE ?? = ?`;
+                    db.query(query, { role_id: response.role_id}, "id", response.id, (err, res) => {
+                        if (err) throw err;
+                        console.log('Successfully updated:' + `${response.first_name}` + " " + `${response.last_name} to ${response.role_id}`);
+                        init();
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        });
+    });
+}
