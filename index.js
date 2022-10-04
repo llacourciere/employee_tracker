@@ -49,6 +49,7 @@ const init = () => {
                     message: 'What is the name of the new department?'
                 }
             ]).then(newDept => {
+                console.log("inserting into departments");
                 db
                     .promise().query('INSERT INTO departments SET ?', newDept)
                     .then(init)
@@ -61,6 +62,9 @@ const init = () => {
 
         if (task == "add an employee") {
             addEmployee();
+        };
+        if (task == "update an employee role") {
+            updateEmployeeRole();
         }
 
     })
@@ -101,8 +105,9 @@ const addNewRole = () => {
     ];
     prompt(questions)
         .then(response => {
-            const query = `INSERT INTO roles (title, salary, department_id) VALUES (?)`;
-            db.query(query, [[response.title, response.salary, response.department]], (err, res) => {
+            console.log("inserting into roles");
+            const query = `INSERT INTO roles SET (?)`;
+            db.query(query, {title:response.title, salary:response.salary, department:response.department}, (err, res) => {
                 if (err) throw err;
                 console.log('Successfully inserted' + " " + `${response.title}` );
                 init();
@@ -168,8 +173,9 @@ const addEmployee = () => {
             ];
         prompt(questions)
         .then(response => {
-            const query = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?)`;
-            db.query(query, [[response.first_name, response.last_name, response.role_id, response.manager_id]], (err, res) => {
+            console.log("inserting into employees");
+            const query = `INSERT INTO employees SET ?`;
+            db.query(query, {first_name:response.first_name, last_name:response.last_name, role_id:response.role_id, manager_id:response.manager_id}, (err, res) => {
                 if (err) throw err;
                 console.log('Successfully inserted:' + `${response.first_name}` + " " + `${response.last_name}`);
                 init();
@@ -181,3 +187,19 @@ const addEmployee = () => {
         });
     });
 }
+
+// const updateEmployeeRole = () => {
+//     const roles = [];
+//     db.query(`SELECT * FROM roles`, (err, res)=> {
+//         if (err) throw err;
+
+//         res.forEach(role => {
+//             let qObj = {
+//                 name: role.name,
+//                 value: role.id
+//             }
+//             roles.push(qObj);
+//         });
+//         let question = 
+//     })
+// }
