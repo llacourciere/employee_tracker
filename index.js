@@ -225,10 +225,10 @@ const updateEmployeeRole = () => {
             ];
             prompt(questions)
                 .then(response => {
-                    const query = `UPDATE employees SET ? WHERE ?? = ?`;
-                    db.query(query, { role_id: response.role_id}, "id", response.id, (err, res) => {
+                    const query = `UPDATE employees SET ? WHERE ?`;
+                    db.query(query, [{ role_id: response.role_id},{id: response.id}], (err, res) => {
                         if (err) throw err;
-                        console.log('Successfully updated:' + `${response.first_name}` + " " + `${response.last_name} to ${response.role_id}`);
+                        console.log('Successfully updated role');
                         init();
                     });
                 })
