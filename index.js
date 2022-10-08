@@ -107,7 +107,7 @@ const addNewRole = () => {
         },
         {
             type: 'list',
-            name: 'department',
+            name: 'department_id',
             //use the departments array we made above to create the choices
             choices: departments,
             message: 'Which department is this role in?'
@@ -116,8 +116,8 @@ const addNewRole = () => {
     //once the questions are answered insert the role information into the role table
     prompt(questions)
         .then(response => {
-            const query = `INSERT INTO roles SET (?)`;
-            db.query(query, { title: response.title, salary: response.salary, department: response.department }, (err, res) => {
+            const query = `INSERT INTO roles SET ?`;
+            db.query(query, [{ title: response.title, salary:response.salary, department_id:response.department_id }], (err, res) => {
                 if (err) throw err;
                 console.log('Successfully inserted' + " " + `${response.title}`);
                 init();
@@ -184,7 +184,7 @@ const addEmployee = () => {
             prompt(questions)
                 .then(response => {
                     const query = `INSERT INTO employees SET ?`;
-                    db.query(query, { first_name: response.first_name, last_name: response.last_name, role_id: response.role_id, manager_id: response.manager_id }, (err, res) => {
+                    db.query(query, [{ first_name: response.first_name, last_name: response.last_name, role_id: response.role_id, manager_id: response.manager_id }], (err, res) => {
                         if (err) throw err;
                         console.log('Successfully inserted:' + `${response.first_name}` + " " + `${response.last_name}`);
                         init();
