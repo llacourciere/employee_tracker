@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const db = require('./connection');
 const cTable = require('console.table');
 
+// this function starts the command line prompts and asks the user what they would like to o
 const init = () => {
     prompt([
         {
@@ -11,6 +12,7 @@ const init = () => {
             message: 'What would you like to do?',
             choices: ['view all departments', 'view all roles', 'view all employees', 'add a department', 'add a role', 'add an employee', 'update an employee role']
         }
+        //once the user selects an option they will then enter that portion of the if statement below
     ]).then(({ task }) => {
         if (task == "view all departments") {
             db
@@ -21,6 +23,7 @@ const init = () => {
 
         if (task == "view all roles") {
             db
+            //in this query we are joining the roles and departments so that we can see which department name is associated with the role
                 .promise().query(`SELECT title, salary, departments.name AS department 
                                     FROM roles 
                                     LEFT JOIN departments 
@@ -30,6 +33,7 @@ const init = () => {
         };
         if (task == "view all employees") {
             db
+            //here we are joining all three tables to show the employee, their role name the department they work in and their manager
                 .promise().query(`SELECT employees.first_name, employees.last_name, roles.title, roles.salary, departments.name AS department, 
                                     CONCAT(manager.first_name, " " , manager.last_name) AS manager
                                     FROM employees 
@@ -40,7 +44,7 @@ const init = () => {
                 .then(data => console.table(data[0]))
                 .then(init);
         };
-
+        //ask the user what the new department name is
         if (task == "add a department") {
             prompt([
                 {
@@ -50,29 +54,34 @@ const init = () => {
                 }
             ]).then(newDept => {
                 db
+                //insert the data from the above question into the department table
                     .promise().query('INSERT INTO departments SET ?', newDept)
                     .then(init)
             })
         };
 
         if (task == "add a role") {
+           //if this task is selected it will start the add new role function
             addNewRole();
         };
 
         if (task == "add an employee") {
+            //if this task is selected it will start the add employee function
             addEmployee();
         };
         if (task == "update an employee role") {
+            //if this task is selected it will start the update employee role function
             updateEmployeeRole();
         }
 
     })
 };
-
+//calling the init funtion to start
 init();
 
 const addNewRole = () => {
     const departments = [];
+    //get all departments and put the data in an object and then push it to the departments array
     db.query(`SELECT * FROM departments`, (err, res) => {
         if (err) throw err;
 
@@ -84,6 +93,7 @@ const addNewRole = () => {
             departments.push(qObj);
         })
     });
+    //user questions to gather the data needed
     let questions = [
         {
             type: 'input',
@@ -98,10 +108,12 @@ const addNewRole = () => {
         {
             type: 'list',
             name: 'department',
+            //use the departments array we made above to create the choices
             choices: departments,
             message: 'Which department is this role in?'
         }
     ];
+    //once the questions are answered insert the role information into the role table
     prompt(questions)
         .then(response => {
             const query = `INSERT INTO roles SET (?)`;
@@ -132,7 +144,7 @@ const addEmployee = () => {
                 value: id
             });
         });
-
+        //same as above get all roles and insert them into an array to create the question choices
         const roles = [];
         db.query(`SELECT * FROM roles`, (err, res) => {
             if (err) throw err;
@@ -225,6 +237,7 @@ const updateEmployeeRole = () => {
             ];
             prompt(questions)
                 .then(response => {
+                    //insert the two objects into the query so that they attach to each ? 
                     const query = `UPDATE employees SET ? WHERE ?`;
                     db.query(query, [{ role_id: response.role_id},{id: response.id}], (err, res) => {
                         if (err) throw err;
